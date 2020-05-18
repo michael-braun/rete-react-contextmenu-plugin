@@ -23,12 +23,36 @@ function install(editor, {
 
     const mousePosition = { x: 0, y: 0 };
 
+    let lastConnectionStart = null;
+    editor.on('rendersocket', ({ el, socket, input, output }) => {
+        el.addEventListener('click', () => {
+            console.log('socket click');
+            if (lastConnectionStart) {
+                lastConnectionStart = null
+            } else {
+                lastConnectionStart = {
+                    socket,
+                    input,
+                    output,
+                }
+            }
+        });
+    });
+
+    editor.view.container.addEventListener('mousedown', (e) => {
+        if (!lastConnectionStart) return;
+
+        const connectionStart = lastConnectionStart;
+        lastConnectionStart = null;
+        editor.trigger('contextmenu', { e, node: null, context: connectionStart });
+    });
+
     editor.on('mousemove', ({ x, y }) => {
         mousePosition.x = x;
         mousePosition.y = y;
     });
 
-    editor.on('contextmenu', ({ e, node }) => {
+    editor.on('contextmenu', ({ e, node, context }) => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -42,6 +66,7 @@ function install(editor, {
                 editor={editor}
                 node={node}
                 root={menu}
+                context={context}
                 x={x}
                 y={y}
                 mousePosition={mousePosition}

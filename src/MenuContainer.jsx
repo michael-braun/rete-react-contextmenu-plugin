@@ -11,7 +11,7 @@ import {
     COMPONENT_NODE_CONTAINER
 } from './constants/components';
 
-const MenuContainer = ({ root, node, editor, x, y, mousePosition, mousePositionStart, components }) => {
+const MenuContainer = ({ root, node, editor, x, y, mousePosition, mousePositionStart, components, context }) => {
     const Component = node
         ? (components[COMPONENT_NODE_CONTAINER] || NodeMenuContainer)
         : (components[COMPONENT_CONTEXT_CONTAINER] || ContextMenuContainer);
@@ -22,6 +22,7 @@ const MenuContainer = ({ root, node, editor, x, y, mousePosition, mousePositionS
 
     return (
         <Component
+            context={context}
             component={ChildComponent}
             x={x}
             y={y}

@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { compatibleSocketInputComparator, compatibleSocketOutputComparator } from '../utils/socket-comparator';
 
 export function deepCopy(obj) {
     return JSON.parse(JSON.stringify(obj));
@@ -15,16 +16,32 @@ export async function createNode(component, { data = {}, meta = {}, x = 0, y = 0
     return node;
 }
 
-const ContextMenuContainer = ({ component: Component, node, editor, mousePositionStart, ...props }) => {
+const ContextMenuContainer = ({ component: Component, node, editor, mousePositionStart, context, ...props }) => {
     const handleCreateNode = useCallback(async (c) => {
-        editor.addNode(await createNode(c, mousePositionStart));
+        const createdNode = await createNode(c, mousePositionStart);
+        editor.addNode(createdNode);
         editor.trigger('hidecontextmenu');
-    }, [editor, mousePositionStart]);
+
+        if (context.output) {
+            const foundInput = Array.from(createdNode.inputs.values()).find(compatibleSocketInputComparator(context.socket));
+
+            if (foundInput) {
+                editor.connect(context.output, foundInput);
+            }
+        } else if (context.input) {
+            const foundOutput = Array.from(createdNode.outputs.values()).find(compatibleSocketOutputComparator(context.socket));
+
+            if (foundOutput) {
+                editor.connect(foundOutput, context.input);
+            }
+        }
+    }, [editor, mousePositionStart, context]);
 
     return (
         <Component
             editor={editor}
             node={node}
+            context={context}
             onCreateNode={handleCreateNode}
             mousePositionStart={mousePositionStart}
             {...props}

@@ -4,8 +4,8 @@ import MenuPositioner from '../utils/MenuPositioner';
 import useComponents from '../utils/useComponents';
 import NodeItem from '../node/NodeItem';
 
-const ContextMenu = ({ x, y, root, editor, onCreateNode }) => {
-    const components = useComponents(editor);
+const ContextMenu = ({ x, y, root, editor, onCreateNode, context }) => {
+    const components = useComponents(editor, context);
 
     return (
         <MenuPositioner
