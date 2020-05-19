@@ -1,6 +1,6 @@
 {
   "name": "@mbraun/rete-react-contextmenu-plugin",
-  "version": "0.0.1-beta.1",
+  "version": "0.0.1-beta.2",
   "description": "A contextmenu-plugin for retejs which is developed with the react-framework in mind",
   "main": "lib/index.js",
   "scripts": {
