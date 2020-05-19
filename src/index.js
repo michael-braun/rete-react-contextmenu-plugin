@@ -33,12 +33,12 @@ function install(editor, {
                     socket,
                     input,
                     output,
-                }
+                };
             }
         });
 
         el.addEventListener('pointerup', (e) => {
-            e.stopPropagation();
+            lastConnectionStart = null;
         });
     });
 
