@@ -22,13 +22,13 @@ const ContextMenuContainer = ({ component: Component, node, editor, mousePositio
         editor.addNode(createdNode);
         editor.trigger('hidecontextmenu');
 
-        if (context.output) {
+        if (context?.output) {
             const foundInput = Array.from(createdNode.inputs.values()).find(compatibleSocketInputComparator(context.socket));
 
             if (foundInput) {
                 editor.connect(context.output, foundInput);
             }
-        } else if (context.input) {
+        } else if (context?.input) {
             const foundOutput = Array.from(createdNode.outputs.values()).find(compatibleSocketOutputComparator(context.socket));
 
             if (foundOutput) {

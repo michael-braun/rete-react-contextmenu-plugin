@@ -24,10 +24,9 @@ export default function useComponents(editor, context) {
     return useMemo(() => {
         let array = Array.from(editor.components.values());
 
-        const socketInputComparator = compatibleSocketInputComparator(context.socket);
-        const socketOutputComparator = compatibleSocketOutputComparator(context.socket);
+        if (context?.socket && context?.output) {
+            const socketInputComparator = compatibleSocketInputComparator(context.socket);
 
-        if (context?.output) {
             array = array.filter(c => {
                 if (!c.componentDefinition?.inputs) {
                     return false;
@@ -39,7 +38,9 @@ export default function useComponents(editor, context) {
             });
         }
 
-        if (context?.input) {
+        if (context?.socket && context?.input) {
+            const socketOutputComparator = compatibleSocketOutputComparator(context.socket);
+
             array = array.filter(c => {
                 if (!c.componentDefinition?.outputs) {
                     return false;
