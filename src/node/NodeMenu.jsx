@@ -19,6 +19,7 @@ const NodeMenu = ({ editor, x, y, root, onDelete }) => {
             y={y}
             root={root}
             style={style}
+            editor={editor}
         >
             <div
                 style={itemStyle}

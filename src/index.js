@@ -25,8 +25,7 @@ function install(editor, {
 
     let lastConnectionStart = null;
     editor.on('rendersocket', ({ el, socket, input, output }) => {
-        el.addEventListener('click', () => {
-            console.log('socket click');
+        el.addEventListener('pointerdown', () => {
             if (lastConnectionStart) {
                 lastConnectionStart = null
             } else {
@@ -37,9 +36,13 @@ function install(editor, {
                 }
             }
         });
+
+        el.addEventListener('pointerup', (e) => {
+            e.stopPropagation();
+        });
     });
 
-    editor.view.container.addEventListener('mousedown', (e) => {
+    editor.view.container.addEventListener('pointerup', (e) => {
         if (!lastConnectionStart) return;
 
         const connectionStart = lastConnectionStart;

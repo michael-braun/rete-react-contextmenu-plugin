@@ -12,6 +12,7 @@ const ContextMenu = ({ x, y, root, editor, onCreateNode, context }) => {
             x={x}
             y={y}
             root={root}
+            editor={editor}
         >
             {components.map((c) => (
                 <NodeItem
