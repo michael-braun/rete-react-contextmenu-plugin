@@ -20,6 +20,10 @@ const MenuPositioner = ({ root, x, y, children, style: styleProp, editor }) => {
         r.addEventListener('mousemove', (event) => {
             event.stopPropagation();
         });
+
+        r.addEventListener('wheel', (event) => {
+            event.stopPropagation();
+        });
     }, []);
 
     const handleClose = useCallback(() => {
