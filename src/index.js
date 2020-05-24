@@ -25,6 +25,18 @@ function install(editor, {
 
     let lastConnectionStart = null;
     editor.on('rendersocket', ({ el, socket, input, output }) => {
+        const connected = {
+            current: input?.hasConnection?.() || false,
+        };
+
+        if (input) {
+            editor.on('connectioncreated', (connection) => {
+                if (connection.input === input) {
+                    connected.current = connection.input.hasConnection();
+                }
+            });
+        }
+
         el.addEventListener('pointerdown', () => {
             if (lastConnectionStart) {
                 lastConnectionStart = null
@@ -33,17 +45,29 @@ function install(editor, {
                     socket,
                     input,
                     output,
+                    connected,
                 };
             }
         });
 
-        el.addEventListener('pointerup', (e) => {
+        el.addEventListener('pointerup', () => {
+            if (input && lastConnectionStart) {
+                lastConnectionStart.connected.current = input.hasConnection();
+            }
+
             lastConnectionStart = null;
         });
     });
 
     editor.view.container.addEventListener('pointerup', (e) => {
-        if (!lastConnectionStart) return;
+        if (!lastConnectionStart || lastConnectionStart.connected.current) {
+            if (lastConnectionStart?.input) {
+                lastConnectionStart.connected.current = lastConnectionStart.input.hasConnection();
+            }
+
+            lastConnectionStart = null;
+            return;
+        }
 
         const connectionStart = lastConnectionStart;
         lastConnectionStart = null;
