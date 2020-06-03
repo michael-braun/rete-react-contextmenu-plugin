@@ -12,7 +12,7 @@ const itemStyle = {
     cursor: 'pointer',
 };
 
-const NodeMenu = ({ editor, x, y, root, onDelete }) => {
+const NodeMenu = ({ editor, x, y, root, onDelete, onClone }) => {
     return (
         <MenuPositioner
             x={x}
@@ -26,6 +26,12 @@ const NodeMenu = ({ editor, x, y, root, onDelete }) => {
                 onClick={onDelete}
             >
                 Delete
+            </div>
+            <div
+                style={itemStyle}
+                onClick={onClone}
+            >
+                Clone
             </div>
         </MenuPositioner>
     );
