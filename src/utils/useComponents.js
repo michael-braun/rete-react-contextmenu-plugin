@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { compatibleSocketInputComparator, compatibleSocketOutputComparator } from './socket-comparator';
+import useContextComparator from './useContextComparator';
 
 function calcHash(components) {
     let retVal = '';
@@ -20,39 +20,16 @@ function calcContextHash(context) {
 export default function useComponents(editor, context) {
     const hash = calcHash(editor.components);
     const contextHash = calcContextHash(context);
+    const contextComparator = useContextComparator();
 
     return useMemo(() => {
         let array = Array.from(editor.components.values());
 
-        if (context?.socket && context?.output) {
-            const socketInputComparator = compatibleSocketInputComparator(context.socket);
-
-            array = array.filter(c => {
-                if (!c.componentDefinition?.inputs) {
-                    return false;
-                }
-
-                const foundInput = c.componentDefinition.inputs.find(socketInputComparator);
-
-                return !!foundInput;
-            });
-        }
-
-        if (context?.socket && context?.input) {
-            const socketOutputComparator = compatibleSocketOutputComparator(context.socket);
-
-            array = array.filter(c => {
-                if (!c.componentDefinition?.outputs) {
-                    return false;
-                }
-
-                const foundInput = c.componentDefinition.outputs.find(socketOutputComparator);
-
-                return !!foundInput;
-            });
+        if (context?.socket && (context?.output || context?.input)) {
+            array = array.filter(c => contextComparator(context, c));
         }
 
         array.sort((a, b) => a.name.localeCompare(b.name));
         return array;
-    }, [hash, contextHash]); /* eslint-disable-line react-hooks/exhaustive-deps */
+    }, [hash, contextHash, contextComparator]); /* eslint-disable-line react-hooks/exhaustive-deps */
 }

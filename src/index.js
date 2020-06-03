@@ -1,9 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MenuContainer from './MenuContainer';
+import { OptionsContext } from './constants/context';
 
 function install(editor, {
     components = {},
+    contextComparator = ((a, b) => false),
 } = {}) {
     editor.bind('hidecontextmenu');
     editor.bind('showcontextmenu');
@@ -43,8 +45,9 @@ function install(editor, {
             } else {
                 lastConnectionStart = {
                     socket,
-                    input,
-                    output,
+                    input: input || null,
+                    output: output || null,
+                    node: input?.node || output?.node,
                     connected,
                 };
             }
@@ -79,6 +82,11 @@ function install(editor, {
         mousePosition.y = y;
     });
 
+    const contextOptions = {
+        components,
+        contextComparator,
+    };
+
     editor.on('contextmenu', ({ e, node, context }) => {
         e.preventDefault();
         e.stopPropagation();
@@ -89,17 +97,19 @@ function install(editor, {
 
         menu.style.display = 'block';
         ReactDOM.render((
-            <MenuContainer
-                editor={editor}
-                node={node}
-                root={menu}
-                context={context}
-                x={x}
-                y={y}
-                mousePosition={mousePosition}
-                mousePositionStart={{ ...mousePosition }}
-                components={components}
-            />
+            <OptionsContext.Provider value={contextOptions}>
+                <MenuContainer
+                    editor={editor}
+                    node={node}
+                    root={menu}
+                    context={context}
+                    x={x}
+                    y={y}
+                    mousePosition={mousePosition}
+                    mousePositionStart={{ ...mousePosition }}
+                    components={components}
+                />
+            </OptionsContext.Provider>
         ), menu);
     });
 }
