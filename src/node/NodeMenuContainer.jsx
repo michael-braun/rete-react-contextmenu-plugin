@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 
 const NodeMenuContainer = ({ component: Component, node, editor, ...props }) => {
     const handleDelete = useCallback(() => {
-        editor.removeNode(node);
+        editor.selected.each((n) => {
+            editor.removeNode(n);
+        });
         editor.trigger('hidecontextmenu');
     }, [editor, node]);
 

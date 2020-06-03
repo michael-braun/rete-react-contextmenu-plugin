@@ -93,6 +93,10 @@ function install(editor, {
 
         if (!editor.trigger('showcontextmenu', { e, node })) return;
 
+        if (node) {
+            editor.selectNode(node);
+        }
+
         const [x, y] = [e.clientX, e.clientY];
 
         menu.style.display = 'block';
